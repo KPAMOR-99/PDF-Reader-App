@@ -16,5 +16,10 @@ public class NavigationController {
     public void prev() {
         if (currentPage > 0) currentPage--;
     }
+
+    public void goToPage(int page) {
+        currentPage = page;
+    }
+
 }
 

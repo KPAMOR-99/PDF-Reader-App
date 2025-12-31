@@ -9,6 +9,20 @@
         android:layout_height="wrap_content"
         android:text="Pick PDF"/>
 
+    <Button
+        android:id="@+id/btnShowBookmarks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show Bookmarks"/>
+
+    <Button
+        android:id="@+id/btnClosePdf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Close PDF"/>
+
+
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"

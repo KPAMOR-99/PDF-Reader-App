@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.app.AlertDialog;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -17,6 +18,8 @@ import com.example.reader.model.PDFDocument;
 import com.example.reader.parser.PDFParser;
 import com.example.reader.render.PDFPageRenderer;
 import com.example.reader.manager.BookmarkManager;
+import com.example.reader.model.Bookmark;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -53,10 +56,20 @@ public class MainActivity extends AppCompatActivity {
         Button bookmark = findViewById(R.id.btnBookmark);
         bookmark.setOnClickListener(v -> toggleBookmark());
 
+        Button showBookmarks = findViewById(R.id.btnShowBookmarks);
+        showBookmarks.setOnClickListener(v -> showBookmarks());
+
+        Button closePdf = findViewById(R.id.btnClosePdf);
+        closePdf.setOnClickListener(v -> closePdf());
+
+
 
         nav = new NavigationController();
         pageRenderer = new PDFPageRenderer();
         bookmarkManager = new BookmarkManager();
+
+
+
 
 
         pick.setOnClickListener(v -> pickPdf());
@@ -75,11 +88,15 @@ public class MainActivity extends AppCompatActivity {
             document = new PDFDocument(uri);
             PDFParser parser = new PDFParser();
             renderer = parser.parse(this, document);
+
+            nav.goToPage(0); // reset page
             renderPage();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     private void renderPage() {
         Bitmap bmp = pageRenderer.render(renderer, nav.getCurrentPage());
@@ -108,14 +125,53 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void render() {
-//        Bitmap bitmap = pageRenderer.render(
-//                renderer,
-//                nav.getCurrentPage(),
-//                zoom.getZoom()
-//        );
-//        pdfImage.setImageBitmap(bitmap);
-//    }
+    private void showBookmarks() {
+
+        if (bookmarkManager.getBookmarks().isEmpty()) {
+            new AlertDialog.Builder(this)
+                    .setMessage("No bookmarks yet")
+                    .setPositiveButton("OK", null)
+                    .show();
+            return;
+        }
+
+        Bookmark[] bookmarks =
+                bookmarkManager.getBookmarks().toArray(new Bookmark[0]);
+
+        String[] labels = new String[bookmarks.length];
+
+        for (int i = 0; i < bookmarks.length; i++) {
+            labels[i] = "Page " + (bookmarks[i].getPageNumber() + 1)
+                    + " - " + bookmarks[i].getNote();
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Bookmarks")
+                .setItems(labels, (dialog, which) -> {
+                    nav.goToPage(bookmarks[which].getPageNumber());
+                   renderPage();
+                })
+                .setNegativeButton("Close", null)
+                .show();
+    }
+
+    private void closePdf() {
+        try {
+            if (renderer != null) {
+                renderer.close();
+                renderer = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        document = null;
+        pdfImage.setImageDrawable(null);
+        bookmarkManager = new BookmarkManager();
+        nav = new NavigationController();
+    }
+
+
 
 
 }
