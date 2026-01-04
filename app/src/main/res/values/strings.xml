@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Reader</string>
+    <string name="prev">Prev</string>
+    <string name="star">☆</string>
+    <string name="next">Next</string>
+    <string name="show_bookmarks">Show Bookmarks</string>
+    <string name="pick_pdf">Pick PDF</string>
+    <string name="close_pdf">Close PDF</string>
 </resources>

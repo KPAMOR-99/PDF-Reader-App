@@ -1,60 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f5f5f5"
+    android:padding="8dp">
 
-    <Button
-        android:id="@+id/btnPickPdf"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pick PDF"/>
-
-    <Button
-        android:id="@+id/btnShowBookmarks"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Show Bookmarks"/>
-
-    <Button
-        android:id="@+id/btnClosePdf"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Close PDF"/>
-
-
-
+    <!-- Top Button Row -->
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <Button
+            android:id="@+id/btnPickPdf"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="2dp"
+            android:background="@android:drawable/btn_default"
+            android:text="@string/pick_pdf"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/btnShowBookmarks"
+            android:layout_width="73dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="2dp"
+            android:layout_weight="1"
+            android:background="@android:drawable/btn_default"
+            android:text="@string/show_bookmarks"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/btnClosePdf"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:background="@android:drawable/btn_default"
+            android:text="@string/close_pdf"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <!-- Page Indicator -->
+    <TextView
+        android:id="@+id/tvPageIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="8dp"
+        android:background="#e3f2fd"
+        android:padding="8dp"
+        android:text="No PDF loaded"
+        android:textColor="#1976d2"
+        android:visibility="gone" />
+
+    <!-- PDF Display Area with border -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#ffffff"
+        android:padding="4dp">
+
+        <ImageView
+            android:id="@+id/pdfImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:background="#fafafa" />
+
+        <TextView
+            android:id="@+id/tvEmptyState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No PDF loaded\n\nClick 'Pick PDF' to open a document"
+            android:textColor="#757575"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:gravity="center" />
+
+    </FrameLayout>
+
+    <!-- Bottom Navigation Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
 
         <Button
             android:id="@+id/btnPrev"
             android:layout_width="0dp"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:text="Prev"
-            android:layout_height="wrap_content"/>
+            android:layout_marginEnd="2dp"
+            android:background="@android:drawable/btn_default"
+            android:text="@string/prev"
+            android:textColor="#000000" />
 
         <Button
             android:id="@+id/btnBookmark"
             android:layout_width="0dp"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:text="☆"
-            android:layout_height="wrap_content"/>
-
+            android:layout_marginHorizontal="2dp"
+            android:background="@android:drawable/btn_default"
+            android:text="@string/star"
+            android:textColor="#000000" />
 
         <Button
             android:id="@+id/btnNext"
             android:layout_width="0dp"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:text="Next"
-            android:layout_height="wrap_content"/>
+            android:layout_marginStart="2dp"
+            android:background="@android:drawable/btn_default"
+            android:text="@string/next"
+            android:textColor="#000000" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/pdfImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"/>
 </LinearLayout>

@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.app.AlertDialog;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,18 +22,15 @@ import com.example.reader.render.PDFPageRenderer;
 import com.example.reader.manager.BookmarkManager;
 import com.example.reader.model.Bookmark;
 
-
-
 public class MainActivity extends AppCompatActivity {
 
     private ImageView pdfImage;
+    private TextView tvPageIndicator, tvEmptyState;
     private PDFDocument document;
     private PdfRenderer renderer;
     private NavigationController nav;
     private PDFPageRenderer pageRenderer;
-
     private BookmarkManager bookmarkManager;
-
 
     private ActivityResultLauncher<Intent> picker =
             registerForActivityResult(
@@ -49,32 +48,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         pdfImage = findViewById(R.id.pdfImage);
+        tvPageIndicator = findViewById(R.id.tvPageIndicator);
+        tvEmptyState = findViewById(R.id.tvEmptyState);
+
         Button pick = findViewById(R.id.btnPickPdf);
         Button next = findViewById(R.id.btnNext);
         Button prev = findViewById(R.id.btnPrev);
-
         Button bookmark = findViewById(R.id.btnBookmark);
-        bookmark.setOnClickListener(v -> toggleBookmark());
-
         Button showBookmarks = findViewById(R.id.btnShowBookmarks);
-        showBookmarks.setOnClickListener(v -> showBookmarks());
-
         Button closePdf = findViewById(R.id.btnClosePdf);
+
+        bookmark.setOnClickListener(v -> toggleBookmark());
+        showBookmarks.setOnClickListener(v -> showBookmarks());
         closePdf.setOnClickListener(v -> closePdf());
-
-
+        pick.setOnClickListener(v -> pickPdf());
+        next.setOnClickListener(v -> showNext());
+        prev.setOnClickListener(v -> showPrev());
 
         nav = new NavigationController();
         pageRenderer = new PDFPageRenderer();
         bookmarkManager = new BookmarkManager();
 
-
-
-
-
-        pick.setOnClickListener(v -> pickPdf());
-        next.setOnClickListener(v -> showNext());
-        prev.setOnClickListener(v -> showPrev());
+        // Show empty state initially
+        tvEmptyState.setVisibility(View.VISIBLE);
+        tvPageIndicator.setVisibility(View.GONE);
     }
 
     private void pickPdf() {
@@ -90,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             renderer = parser.parse(this, document);
 
             nav.goToPage(0); // reset page
+            updateUIForDocumentLoaded();
             renderPage();
 
         } catch (Exception e) {
@@ -97,10 +95,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateUIForDocumentLoaded() {
+        tvEmptyState.setVisibility(View.GONE);
+        tvPageIndicator.setVisibility(View.VISIBLE);
+        pdfImage.setVisibility(View.VISIBLE);
+    }
 
     private void renderPage() {
         Bitmap bmp = pageRenderer.render(renderer, nav.getCurrentPage());
         pdfImage.setImageBitmap(bmp);
+
+        // Update page indicator
+        if (document != null) {
+            String indicator = "Page " + (nav.getCurrentPage() + 1) +
+                    " of " + document.getTotalPages();
+            tvPageIndicator.setText(indicator);
+        }
     }
 
     private void showNext() {
@@ -126,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showBookmarks() {
-
         if (bookmarkManager.getBookmarks().isEmpty()) {
             new AlertDialog.Builder(this)
                     .setMessage("No bookmarks yet")
@@ -149,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Bookmarks")
                 .setItems(labels, (dialog, which) -> {
                     nav.goToPage(bookmarks[which].getPageNumber());
-                   renderPage();
+                    renderPage();
                 })
                 .setNegativeButton("Close", null)
                 .show();
@@ -167,12 +176,9 @@ public class MainActivity extends AppCompatActivity {
 
         document = null;
         pdfImage.setImageDrawable(null);
+        tvEmptyState.setVisibility(View.VISIBLE);
+        tvPageIndicator.setVisibility(View.GONE);
         bookmarkManager = new BookmarkManager();
         nav = new NavigationController();
     }
-
-
-
-
 }
-
